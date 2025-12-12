@@ -23,7 +23,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     with open(html_file, 'w') as file:
-        pass
+        file.write("<html><body>")
 
     # Si tout est bon : rien afficher
     sys.exit(0)
