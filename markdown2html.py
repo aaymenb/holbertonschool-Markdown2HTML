@@ -21,12 +21,9 @@ if __name__ == "__main__":
     if not os.path.isfile(md_file):
         eprint(f"Missing {md_file}")
         sys.exit(1)
-    
-    with open(md_file, 'r') as file:
-        md_content = file.read()
-    
+
     with open(html_file, 'w') as file:
-        file.write(md_content)
+        pass
 
     # Si tout est bon : rien afficher
     sys.exit(0)
