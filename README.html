@@ -1,13 +1,36 @@
-<h1>My title</h1>
-<ul>
-<li>Hello</li>
-<li>Bye</li>
-</ul>
-<p>
-Hello
-</p>
-<p>
-I'm a text
-<br/>
-with 2 lines
-</p>
+#!/usr/bin/python3
+"""
+markdown2html module
+"""
+
+
+import sys
+import os
+
+
+def markdown_to_html(markdown_file: str, output_file: str):
+    """
+    Converts a Markdown file to an HTML file.
+
+    Args:
+        markdown (str): Path to the Markdown input file.
+        output_file (str): Path to the HTML output file.
+
+    Returns:
+        nothing
+    """
+    # Check if the Markdown file exists
+    if not os.path.exists(markdown_file):
+        print(f"Missing {markdown_file}", file=sys.stderr)
+        exit(1)
+
+    exit(0)
+
+
+# Prevents the code in the script from being executed when imported
+if __name__ == "__main__":
+    # Checks if there are two arguments in the function
+    if len(sys.argv) < 3:  # Create an array where tab[0] the name of the funct
+        print("Usage: ./markdown2html.py README.md README.html",
+              file=sys.stderr)
+        exit(1)
