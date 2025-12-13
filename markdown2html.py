@@ -1,97 +1,19 @@
 #!/usr/bin/python3
-""" Script that converts Markdown to HTML """
-
 import sys
 import os
-import re
-import hashlib
 
+# Vérifie qu'on a bien 2 arguments (nom du fichier + fichier de sortie)
+if len(sys.argv) != 3:
+    print(f"Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
+    sys.exit(1)
 
-def convert_markdown(md_content):
-    """
-    Convert Markdown headings, lists, paragraphs, bold, emphasis,
-    and custom syntax to HTML.
-    """
-    html_content = []
-    in_ulist = False
-    in_olist = False
-    in_paragraph = False
-    paragraph_lines = []
+input_file = sys.argv[1]
+output_file = sys.argv[2]
 
-    def close_paragraph():
-        nonlocal paragraph_lines, in_paragraph
-        if paragraph_lines:
-            html_content.append('<p>')
-            for i, line in enumerate(paragraph_lines):
-                if i > 0:
-                    html_content.append('<br/>')
-                html_content.append(apply_text_styles(line))
-            html_content.append('</p>')
-            paragraph_lines = []
-            in_paragraph = False
+# Vérifie que le fichier Markdown existe
+if not os.path.isfile(input_file):
+    print(f"Missing {input_file}", file=sys.stderr)
+    sys.exit(1)
 
-    def apply_text_styles(text):
-        """ Convert Markdown bold, emphasis, and custom syntax to HTML. """
-        text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
-        text = re.sub(r'__(.+?)__', r'<em>\1</em>', text)
-        text = re.sub(r'\[\[(.+?)\]\]', lambda m: hashlib.md5(
-            m.group(1).encode()).hexdigest(), text)
-        text = re.sub(r'\(\((.+?)\)\)', lambda m: re.sub(
-            r'[cC]', '', m.group(1)), text)
-        return text
-
-    for line in md_content.splitlines():
-        match_heading = re.match(r'(#{1,6}) (.+)', linech_heading:
-            close_paragraph()
-            level = len(match_heading.group(1))
-            text = apply_text_styles(match_heading.group(2))
-            html_content.append(f'<h{level}>{text}</h{level}>')
-            if in_ulist:
-                html_content.append('</ul>')
-                in_ulist = False
-            if in_olist:
-                html_content.append('</ol>')
-                in_olist = False
-        elif line.startswith('- '):
-            close_paragraph()
-            if in_olist:
-                html_content.append('</ol>')
-                in_olist = False
-            if not in_ulist:
-                html_content.append('<ul>')
-                in_ulist = True
-            html_content.append(f'<li>{apply_text_styles(line[2:])}</li>')
-        elif line.startswith('* '):
-            close_paragraph()
-            if in_ulist:
-                html_content.append('</ul>')
-                in_ulist = False
-            if not in_olist:
-                html_content.append('<ol>')
-                in_olist = True
-            html_content.append(f'<li>{apply_text_styles(line[2:])}</li>')
-        else:
-            if in_ulist:
-                html_content.append('</ul>')
-                in_ulist = False
-            if in_olist:
-                html_content.append('</ol>')
-                in_olist = False
-            if line.strip():
-                paragraph_lines.append(line)
-                in_paragraph = True
-            else:
-                close_paragraph()
-
-    close_paragraph()
-    if in_ulist:
-        html_content.append('</ul>')
-    if in_olist:
-        html_content.append('</ol>')
-
-    return '\n'.join(html_content)
-
-
-def main():
-    if len(sys.argv) < 3:
-        sys.stderr.write("Usage: ./markdown2html.py:
+# Si tout va bien, on ne fait rien et on sort avec code 0
+sys.exit(0) 
