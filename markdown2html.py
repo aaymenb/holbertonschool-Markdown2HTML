@@ -1,29 +1,70 @@
 #!/usr/bin/python3
-''' Markdown to HTML '''
+"""Minimal Markdown to HTML converter entrypoint."""
+
+
+import os
 import sys
-from os import path
+
+
+def main():
+    """Validate arguments and prepare output file."""
+    if len(sys.argv) < 3:
+        print("Usage: ./markdown2html.py README.md README.html",
+              file=sys.stderr)
+        sys.exit(1)
+
+    md_file = sys.argv[1]
+    output_file = sys.argv[2]
+
+    if not os.path.isfile(md_file):
+        print(f"Missing {md_file}", file=sys.stderr)
+        sys.exit(1)
+
+    with open(md_file, "r", encoding="utf-8") as f_md, open(
+        output_file, "w", encoding="utf-8"
+    ) as f_out:
+        in_list = False
+
+        for line in f_md:
+            stripped = line.rstrip("\n")
+
+            # Headings
+            if stripped.startswith("#"):
+                hashes, _, text = stripped.partition(" ")
+                level = len(hashes)
+                if 1 <= level <= 6 and text:
+                    if in_list:
+                        f_out.write("</ul>\n")
+                        in_list = False
+                    f_out.write(f"<h{level}>{text}</h{level}>\n")
+                    continue
+
+            # Unordered list item
+            if stripped.startswith("- "):
+                if not in_list:
+                    f_out.write("<ul>\n")
+                    in_list = True
+                item_text = stripped[2:]
+                f_out.write(f"<li>{item_text}</li>\n")
+                continue
+
+            # Close list if we were in one and reached a non-list line.
+            if in_list:
+                f_out.write("</ul>\n")
+                in_list = False
+
+            # Non-heading, non-list lines are written unchanged.
+            if line.endswith("\n"):
+                f_out.write(stripped + "\n")
+            else:
+                f_out.write(stripped)
+
+        # Close list if file ended while inside a list.
+        if in_list:
+            f_out.write("</ul>\n")
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":
-    '''the number of arguments is less than 2'''
-    if len(sys.argv) != 3:
-        print('Usage: ./markdown2html.py README.md README.html' ,file=sys.stderr)
-        exit(1)
-    '''Markdown file doesn’t exist'''
-    if not path.exists(sys.argv[1]):
-        print('Missing {}'.format(sys.argv[1]), file=sys.stderr)
-        exit(1)
-    '''Headings Markdown'''
-    with open(sys.argv[1], 'r') as read_file:
-        line_list = []
-        for lines in read_file.readlines():
-            cout_cra = 0
-            for line in lines:
-                for car in range(len(line)):
-                    if line[car] == '#':
-                        cout_cra += 1
-            lines = lines.rstrip('\r\n')
-            line_list.append("<h{}>{}</h{}>".format(cout_cra, lines.replace('#',''), cout_cra))
-        with open(sys.argv[2], 'a') as write_file:
-            for line in line_list:
-                write_file.write('{}\n'.format(line))
+    main()
