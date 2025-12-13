@@ -41,8 +41,7 @@ def convert_markdown(md_content):
         return text
 
     for line in md_content.splitlines():
-        match_heading = re.match(r'(#{1,6}) (.+)', line)
-        if match_heading:
+        match_heading = re.match(r'(#{1,6}) (.+)', linech_heading:
             close_paragraph()
             level = len(match_heading.group(1))
             text = apply_text_styles(match_heading.group(2))
@@ -95,25 +94,4 @@ def convert_markdown(md_content):
 
 def main():
     if len(sys.argv) < 3:
-        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
-        exit(1)
-
-    md_file = sys.argv[1]
-    html_file = sys.argv[2]
-
-    if not os.path.exists(md_file):
-        sys.stderr.write(f"Missing {md_file}\n")
-        exit(1)
-
-    with open(md_file, 'r') as md_filename:
-        md_content = md_filename.read()
-        html_content = convert_markdown(md_content)
-
-    with open(html_file, 'w') as html_filename:
-        html_filename.write(html_content)
-
-    exit(0)
-
-
-if __name__ == "__main__":
-    main()
+        sys.stderr.write("Usage: ./markdown2html.py:
