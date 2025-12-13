@@ -1,18 +1,28 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
 import sys
-import os
+from os import path
 
 if __name__ == "__main__":
-    # Vérifier le nombre d'arguments
-    if len(sys.argv) < 3:
-        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
+
+    if len(sys.argv) != 3:
+        print("Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
         sys.exit(1)
 
-    md_file = sys.argv[1]
-    # Vérifier si le fichier Markdown existe
-    if not os.path.isfile(md_file):
-        sys.stderr.write(f"Missing {md_file}\n")
+    if not path.exists(sys.argv[1]):
+        print(f"Missing {sys.argv[1]}", file=sys.stderr)
         sys.exit(1)
 
-    # Si tout est OK
-    sys.exit(0) 
+    with open(sys.argv[1], "r") as md, open(sys.argv[2], "w") as html:
+        for line in md:
+            line = line.rstrip("\n")
+
+            count = 0
+            for c in line:
+                if c == "#":
+                    count += 1
+                else:
+                    break
+
+            if count > 0 and count <= 6 and line[count] == " ":
+                content = line[count+1:]
+                html.write(f"<h{count}>{content}</h{count}>\n")
