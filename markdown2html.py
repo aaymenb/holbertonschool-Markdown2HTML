@@ -1,23 +1,29 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+''' Markdown to HTML '''
 import sys
-import os
+from os import path
 
-def eprint(message):
-    sys.stderr.write(message + "\n")
 
 if __name__ == "__main__":
-
-    # Vérifier si on a au moins 2 arguments
-    if len(sys.argv) < 3:
-        eprint("Usage: ./markdown2html.py README.md README.html")
-        sys.exit(1)
-
-    md_file = sys.argv[1]
-
-    # Vérifier si le fichier markdown existe
-    if not os.path.isfile(md_file):
-        eprint(f"Missing {md_file}")
-        sys.exit(1)
-
-    # Si tout va bien : ne rien afficher et quitter 0
-    sys.exit(0)
+    '''the number of arguments is less than 2'''
+    if len(sys.argv) != 3:
+        print('Usage: ./markdown2html.py README.md README.html' ,file=sys.stderr)
+        exit(1)
+    '''Markdown file doesn’t exist'''
+    if not path.exists(sys.argv[1]):
+        print('Missing {}'.format(sys.argv[1]), file=sys.stderr)
+        exit(1)
+    '''Headings Markdown'''
+    with open(sys.argv[1], 'r') as read_file:
+        line_list = []
+        for lines in read_file.readlines():
+            cout_cra = 0
+            for line in lines:
+                for car in range(len(line)):
+                    if line[car] == '#':
+                        cout_cra += 1
+            lines = lines.rstrip('\r\n')
+            line_list.append("<h{}>{}</h{}>".format(cout_cra, lines.replace('#',''), cout_cra))
+        with open(sys.argv[2], 'a') as write_file:
+            for line in line_list:
+                write_file.write('{}\n'.format(line))
