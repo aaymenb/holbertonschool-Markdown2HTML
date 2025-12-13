@@ -1,15 +1,19 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import sys
 import os
 
-if __name__ == "__main__":
+# Vérifie qu'on a bien 2 arguments (nom du fichier + fichier de sortie)
+if len(sys.argv) != 3:
+    print(f"Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
+    sys.exit(1)
 
-    if len(sys.argv) < 3:
-        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
-        sys.exit(1)
+input_file = sys.argv[1]
+output_file = sys.argv[2]
 
-    if not os.path.exists(sys.argv[1]):
-        sys.stderr.write("Missing {}\n".format(sys.argv[1]))
-        sys.exit(1)
+# Vérifie que le fichier Markdown existe
+if not os.path.isfile(input_file):
+    print(f"Missing {input_file}", file=sys.stderr)
+    sys.exit(1)
 
-    sys.exit(0)
+# Si tout va bien, on ne fait rien et on sort avec code 0
+sys.exit(0)
